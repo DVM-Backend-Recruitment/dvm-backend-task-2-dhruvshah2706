@@ -8,7 +8,7 @@
         <form method="POST">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Yes, Delete</button>
-            <a href="{% url 'theater-detail' pk=screen.theater.pk %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url 'theater-dashboard' pk=screen.theater.pk %}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 {% endblock %}

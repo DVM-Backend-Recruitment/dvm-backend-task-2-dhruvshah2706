@@ -24,7 +24,7 @@ def screen_add(request):
             screen = screen_form.save(commit=False)
             screen.theater = theater
             screen.save()
-            return redirect(reverse('theater-detail', kwargs={'pk': theater.id}))
+            return redirect(reverse('theater-dashboard', kwargs={'pk': theater.id}))
     else:
         screen_form = AddScreenForm()
     
@@ -42,7 +42,7 @@ def screen_edit(request, screen_id):
         if screen_form.is_valid():
             #Save the updated screen details
             screen_form.save()
-            return redirect('theater-detail', pk=screen.theater.pk)  #Redirect to theater detail page
+            return redirect('theater-dashboard', pk=screen.theater.pk)  #Redirect to theater detail page
     else:
         screen_form = AddScreenForm(instance=screen)
 
@@ -58,6 +58,6 @@ def screen_delete(request, screen_id):
         #If it's a POST request, delete the screen
         screen.delete()
         messages.success(request, "The screen has been deleted successfully.")
-        return redirect('theater-detail', pk=screen.theater.pk)  #Redirect back to the theater details page
+        return redirect('theater-dashboard', pk=screen.theater.pk)  #Redirect back to the theater details page
     
     return render(request, 'theaters/screen_confirm_delete.html', {'screen': screen})

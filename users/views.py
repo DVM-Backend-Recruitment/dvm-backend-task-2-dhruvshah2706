@@ -1,11 +1,10 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserRegistrationForm, ProfileForm, CustomAuthenticationForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm
 from .decorators import role_required
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from Theaters.forms import TheaterForm
+from Theaters.models import Theater
 from django.contrib import messages
 
 @role_required('admin')
@@ -82,16 +81,9 @@ def custom_logout(request):
 
 @login_required
 def dashboard_redirect(request):
-    #if request.user.profile.role == 'regular':
-    #    return HttpResponse('<h1>Regular User</h1>')
-    #    #return redirect('regular_user_dashboard')  #Create this view
     if request.user.profile.role == 'theateradmin':
-       return redirect('theater-detail')
-    #    #return redirect('theater_admin_dashboard')  #Create this view
-    #elif request.user.profile.role == 'superadmin':
-    #    return HttpResponse('<h1>SuperAdmin User</h1>')
-    #    #return redirect('super_admin_dashboard')  #Create this view
-    #return redirect('login')
+       theater = get_object_or_404(Theater,admin=request.user)
+       return redirect('theater-dashboard',pk=theater.id)
     return render(request, 'users/dashboard.html')
 
 def accounts_login(request):

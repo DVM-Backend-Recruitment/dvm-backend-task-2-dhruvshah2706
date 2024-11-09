@@ -16,7 +16,7 @@ def schedule_show(request):
             show.theater = theater
             show.end_time = show.start_time + timezone.timedelta(minutes=movie.duration)  #Calculate end time
             show.save()
-            return redirect('theater-detail', pk=theater.id)
+            return redirect('theater-dashboard', pk=theater.id)
     else:
         form = ShowForm(theater=theater)
 
