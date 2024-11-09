@@ -4,8 +4,11 @@ from Theaters.models import Theater,Screen
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    duration = models.IntegerField()  # Duration in minutes
+    duration = models.IntegerField()  #Duration in minutes
     release_date = models.DateField()
+
+    def __str__(self):
+        return self.title
 
 class Show(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)

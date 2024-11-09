@@ -16,29 +16,28 @@ from pathlib import Path
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+#Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+#Quick-start development settings - unsuitable for production
+#See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+#SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-)j2^fdl1y9q-=0!4j@^ry44do$2@fhh-v3-ur#ajofcv$@ezm1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+#SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
 
-# Application definition
+#Application definition
 
 INSTALLED_APPS = [
     'Movies.apps.MoviesConfig',
     'Theaters.apps.TheatersConfig',
     'Transactions.apps.TransactionsConfig',
-    'auth_app',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -85,25 +84,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'movie.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+#Database
+#https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'movie_ticket_db',                # Replace 'postgres' with your actual database name
-        'USER': 'dhruvshah2706',           # or use 'movie_user' if you prefer
-        'PASSWORD': 'Abcd@1234',       # Replace with your actual password
-        'HOST': 'localhost',               # or '127.0.0.1' for local connection
-        'PORT': '5432',                    # Default PostgreSQL port
+        'NAME': 'movie_ticket_db',                #Replace 'postgres' with your actual database name
+        'USER': 'dhruvshah2706',           #or use 'movie_user' if you prefer
+        'PASSWORD': 'Abcd@1234',       #Replace with your actual password
+        'HOST': 'localhost',               #or '127.0.0.1' for local connection
+        'PORT': '5432',                    #Default PostgreSQL port
     }
 }
 
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+#Password validation
+#https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -120,17 +118,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 #for google sign in
 
 SITE_ID = 2
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Django’s default authentication
-    'allauth.account.auth_backends.AuthenticationBackend',  # Required for allauth
+    'django.contrib.auth.backends.ModelBackend',  #Django’s default authentication
+    'allauth.account.auth_backends.AuthenticationBackend',  #Required for allauth
 ]
-# settings.py
 
-# Configure the social account providers
+#Configure the social account providers
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -149,13 +145,13 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "optional"  # Adjust based on your requirements
-LOGIN_REDIRECT_URL = '/'  # Redirect after login
+ACCOUNT_EMAIL_VERIFICATION = "optional"  #Adjust based on your requirements
+LOGIN_REDIRECT_URL = '/'  #Redirect after login
 LOGOUT_REDIRECT_URL = '/'
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
+#Internationalization
+#https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -166,12 +162,12 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+#Static files (CSS, JavaScript, Images)
+#https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+#Default primary key field type
+#https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

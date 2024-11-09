@@ -1,0 +1,12 @@
+<!-- templates/theaters/schedule_show.html -->
+{% extends 'ticket/base.html' %}
+
+{% block content %}
+  <h2>Schedule a New Show</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Show</button>
+  </form>
+  <a href="{% url 'theater-detail' theater.id %}">Back to Theater</a>
+{% endblock %}

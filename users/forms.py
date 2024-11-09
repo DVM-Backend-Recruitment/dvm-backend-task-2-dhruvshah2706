@@ -1,4 +1,4 @@
-# forms.py in your Users app
+#forms.py in your Users app
 
 from django import forms
 from django.contrib.auth.models import User
@@ -11,7 +11,6 @@ from django.contrib.auth.forms import AuthenticationForm
 class ProfileForm(forms.ModelForm):
     ROLE_CHOICES = [
         ('theateradmin', 'Theater Admin'),
-        ('superadmin', 'Super Admin'),
     ]
 
     role = forms.ChoiceField(choices=ROLE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))

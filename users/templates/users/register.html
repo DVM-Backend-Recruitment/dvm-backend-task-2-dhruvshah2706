@@ -9,7 +9,7 @@
         {{ user_form.non_field_errors }}
         <div class="form-group">
             <label for="username">Username</label>
-            {{ user_form.username}}
+            {{ user_form.username }}
             {{ user_form.username.errors }}
         </div>
         <div class="form-group">
@@ -18,12 +18,12 @@
             {{ user_form.email.errors }}
         </div>
         <div class="form-group">
-            <label for="password">Password1</label>
+            <label for="password1">Password</label>
             {{ user_form.password1 }}
             {{ user_form.password1.errors }}
         </div>
         <div class="form-group">
-            <label for="password">Password2</label>
+            <label for="password2">Confirm Password</label>
             {{ user_form.password2 }}
             {{ user_form.password2.errors }}
         </div>
@@ -32,6 +32,22 @@
             {{ profile_form.role }}
             {{ profile_form.role.errors }}
         </div>
+
+        <!-- Theater Details -->
+        <div id="theater-details" style="">
+            <h4>Theater Details</h4>
+            <div class="form-group">
+                <label for="name">Theater Name</label>
+                {{ theater_form.name }}
+                {{ theater_form.name.errors }}
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                {{ theater_form.location }}
+                {{ theater_form.location.errors }}
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-success">Register</button>
         <div class="mt-3">
             <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
