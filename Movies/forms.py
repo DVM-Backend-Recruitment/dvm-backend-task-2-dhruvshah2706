@@ -3,7 +3,7 @@ from django import forms
 from .models import Show, Movie, Screen, Theater
 from django.utils import timezone
 
-class ShowForm(forms.ModelForm):
+class ScheduleShowForm(forms.ModelForm):
     class Meta:
         model = Show
         fields = ['movie', 'screen', 'start_time', 'ticket_price']
