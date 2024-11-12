@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 #Application definition
 
 INSTALLED_APPS = [
+    'Food.apps.FoodConfig',
+    'Bookings.apps.BookingsConfig',
     'Movies.apps.MoviesConfig',
     'Theaters.apps.TheatersConfig',
     'Transactions.apps.TransactionsConfig',
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [

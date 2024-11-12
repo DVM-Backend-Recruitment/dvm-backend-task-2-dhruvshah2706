@@ -1,4 +1,4 @@
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect
 
 def home(request):
-    return render(request,'ticket/login.html')
+    return redirect('regular-dashboard')

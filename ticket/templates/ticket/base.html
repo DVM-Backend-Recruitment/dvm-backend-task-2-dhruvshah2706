@@ -21,6 +21,9 @@
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
+                        <a class = "nav-link" href="{% url 'profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                     </li>
                 {% else %}
@@ -34,6 +37,14 @@
             </ul>
         </div>
     </nav>
+
+    {% if messages %}
+    <div id="message-container" class="alert alert-info">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="container mt-5">
         {% block content %}

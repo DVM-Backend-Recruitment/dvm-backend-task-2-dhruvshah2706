@@ -3,6 +3,7 @@ from .forms import AddScreenForm
 from django.urls import reverse
 from .models import Theater,Screen
 from Movies.models import Show
+from Food.models import FoodItem
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import theater_admin_required,is_theater_admin
@@ -13,7 +14,14 @@ def theater_dashboard(request, pk):
     theater = get_object_or_404(Theater, pk=pk)
     screens = Screen.objects.filter(theater=theater)
     shows = Show.objects.filter(theater=theater)
-    return render(request, 'Theaters/theater_dashboard.html', {'theater': theater, 'screens': screens, 'shows':shows})
+    food_items = FoodItem.objects.filter(theater=theater)
+    context = {
+        'theater':theater,
+        'screens':screens,
+        'shows':shows,
+        'food_items':food_items
+    }
+    return render(request, 'Theaters/theater_dashboard.html', context)
 
 
 @login_required
@@ -30,7 +38,11 @@ def screen_add(request):
     else:
         screen_form = AddScreenForm()
     
-    return render(request, 'Theaters/screen_add.html', {'screen_form': screen_form, 'theater': theater})
+    context = {
+        'screen_form': screen_form,
+        'theater': theater
+    }
+    return render(request, 'Theaters/screen_add.html',context )
 
 
 @login_required
@@ -47,7 +59,11 @@ def screen_edit(request, screen_id):
     else:
         screen_form = AddScreenForm(instance=screen)
 
-    return render(request, 'Theaters/screen_edit.html', {'screen_form': screen_form, 'screen': screen})
+    context = {
+        'screen_form': screen_form,
+        'screen': screen
+    }
+    return render(request, 'Theaters/screen_edit.html', context)
 
 
 @login_required

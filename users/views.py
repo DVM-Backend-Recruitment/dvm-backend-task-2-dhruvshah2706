@@ -1,21 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserRegistrationForm, ProfileForm, CustomAuthenticationForm
+from .forms import UserRegistrationForm, ProfileForm, CustomAuthenticationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
 from .decorators import role_required
 from django.contrib.auth.decorators import login_required
 from Theaters.forms import TheaterForm
 from Theaters.models import Theater
+from Movies.models import Show
 from django.contrib import messages
-
-@role_required('admin')
-def theater_admin_dashboard(request):
-    #Logic for theater admin dashboard
-    pass
-
-@role_required('superadmin')
-def super_admin_dashboard(request):
-    #Logic for super admin dashboard
-    pass
+from django.db.models import Q
+from django.utils import timezone
+from Bookings.models import Booking
+from Food.models import Order
 
 def register(request):
     if request.method == 'POST':
@@ -70,22 +65,63 @@ def custom_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('dashboard_redirect')
+                return redirect('regular-dashboard')
             else:
                 form.add_error(None, "Invalid username or password.")  #Add error for invalid credentials
     return render(request, 'users/login.html', {'form': form})
 
+@login_required
 def custom_logout(request):
     logout(request)
     return redirect('login')
 
 @login_required
-def dashboard_redirect(request):
+def regular_dashboard(request):
     if request.user.profile.role == 'theateradmin':
        theater = get_object_or_404(Theater,admin=request.user)
        return redirect('theater-dashboard',pk=theater.id)
-    return render(request, 'users/dashboard.html')
+    shows = Show.objects.all()
+    query = request.GET.get('query', '')  # Get the search query, default to an empty string
+    shows = Show.objects.filter(start_time__gte=timezone.now())
+    is_empty = False
+    if query:
+        shows = shows.filter(
+            Q(movie__title__icontains=query) |
+            Q(theater__name__icontains=query) |
+            Q(screen__name__icontains=query)
+        )
+        print(shows)
+        if not shows:
+            is_empty = True
+
+    user_bookings = Booking.objects.filter(user=request.user)
+    food_orders = {booking.id: Order.objects.filter(booking=booking) for booking in user_bookings}
+
+    context = {
+        'shows':shows,
+        'is_empty':is_empty,
+        'user_bookings': user_bookings,
+        'food_orders': food_orders,
+    }
+    return render(request, 'users/dashboard.html',context)
+
 
 def accounts_login(request):
     return redirect('login')
 
+
+@login_required
+@role_required(['regular','theateradmin'])
+def profile(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        if u_form.is_valid():
+            u_form.save()
+            messages.success(request, f'Your account has been updated')
+            return redirect('profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+    context = {
+        'u_form': u_form,
+    }
+    return render(request, 'users/profile.html', context)

@@ -11,9 +11,9 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.get_or_create(user=instance)
         
 
-#@receiver(post_save, sender=User)
-#def save_user_profile(sender, instance, **kwargs):
-#    instance.profile.save()  #Save any updates to profile automatically
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+   instance.profile.save()  #Save any updates to profile automatically
 
 ##Signal to ensure Profile creation for Google/social logins
 #@receiver(social_account_added)

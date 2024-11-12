@@ -1,4 +1,3 @@
-#forms.py
 from django import forms
 from .models import Show, Movie, Screen, Theater
 from django.utils import timezone
@@ -17,4 +16,4 @@ class ScheduleShowForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.theater:
             self.fields['screen'].queryset = Screen.objects.filter(theater=self.theater)  #Filter screens by theater
-        self.fields['movie'].queryset = Movie.objects.all()  #Show all available movies
+        self.fields['movie'].queryset = Movie.objects.all()  

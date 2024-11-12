@@ -5,7 +5,6 @@ from .models import Theater,Screen
 def theater_admin_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         theater = get_object_or_404(Theater, pk=kwargs.get('pk'))
-        #Check if the logged-in user is the admin of the theater
         if theater.admin == request.user:
             return view_func(request, *args, **kwargs)
         else:
