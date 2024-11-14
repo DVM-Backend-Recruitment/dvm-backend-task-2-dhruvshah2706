@@ -9,8 +9,13 @@ from django.contrib.auth.decorators import login_required
 from Transactions.views import initiate_refund
 from django.utils import timezone
 from .forms import FoodOrderForm
-from Food.models import Order
+from Food.models import Order,FoodItem
 from .decorators import user_is_booking_owner
+import random
+from django.core import signing
+
+def generate_otp():
+    return f"{random.randint(100000, 999999)}"
 
 
 def book_ticket(request, show_id):
@@ -35,36 +40,23 @@ def book_ticket(request, show_id):
             # Check if the user has enough wallet balance
             if user_profile.wallet_balance >= total_amount:
                 # Deduct money from user's wallet and add it to theater admin's wallet
-                user_profile.wallet_balance -= total_amount
-                theater_admin_profile.wallet_balance += total_amount
-                user_profile.save()
-                theater_admin_profile.save()
-
-                # Create a confirmed booking
-                booking = Booking.objects.create(
-                    user=request.user,
-                    show=show,
-                    status='CONFIRMED',
-                    tickets = num_tickets,
-                )
-
-                # Create a successful transaction
-                Transaction.objects.create(
+                otp = generate_otp()
+                transaction = Transaction.objects.create(
                     sender_wallet=user_profile,
                     receiver_wallet=theater_admin_profile,
                     transaction_type='ticket',
                     amount=total_amount,
-                    status='COMPLETE',
-                    booking = booking
+                    status='PENDING', # when transaction is not yet complete
+                    otp = otp
                 )
-
-                
-
-                show.booked_tickets += num_tickets
-                show.save()
-
-                messages.success(request, f"{num_tickets} tickets successfully booked!")
-                return redirect('regular-dashboard')
+                data = {
+                    "transaction_id": transaction.id,
+                    "source": "book_ticket",
+                    "show_id": show_id,
+                    "num_tickets": num_tickets
+                }
+                token = signing.dumps(data)
+                return redirect('verify-otp', token=token)
 
             else:
                 # Insufficient funds, revert the changes
@@ -93,7 +85,6 @@ def book_ticket(request, show_id):
 @login_required
 @role_required(['regular',])
 def cancel_booking(request,booking_id):
-    
     booking = get_object_or_404(Booking, id=booking_id)
     if timezone.now() > booking.show.start_time:
         messages.error(request,"You can no longer cancel this booking")
@@ -101,15 +92,30 @@ def cancel_booking(request,booking_id):
 
     if request.method == 'POST':
         #If it's a POST request, delete the screen
-        transaction = Transaction.objects.get(booking=booking)
-        flag = initiate_refund(transaction)
-        if flag:
+        transaction_booking = Transaction.objects.get(booking=booking)
+        order = Order.objects.get(booking = booking)
+        transaction_order = Transaction.objects.get(order=order)
+        otp = generate_otp()
+        transaction_booking.otp = otp
+        transaction_booking.save()
+        data = {
+            "transaction_id": transaction_booking.id,
+            "transaction_order_id": transaction_order.id,
+            "source": "cancel_booking",
+            "booking_id": booking.id,
+        }
+        token = signing.dumps(data)
+        return redirect('verify-otp', token=token)
+
+        flag1 = initiate_refund(transaction_booking)
+        flag2 = initiate_refund(transaction_order)
+        if flag1 and flag2:
             booking.status = 'Cancelled'
             booking.show.booked_tickets -= booking.tickets
             booking.show.save()
             booking.save()
-            messages.success(request, "The booking has been cancelled successfully.")
-        else:
+            messages.success(request, "The booking has been cancelled successfully, and refund has been made.")
+        else :
             messages.error(request, "Refund could not be completed.")
         return redirect('view-transactions')
     
@@ -120,19 +126,41 @@ def cancel_booking(request,booking_id):
 @user_is_booking_owner
 def book_food(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
+    if timezone.now() > booking.show.start_time:
+        messages.error(request,"You can no longer order for this show")
+        return redirect('regular-dashboard')
     theater = booking.show.theater
     user_profile = request.user.profile  # Assuming a profile is linked to the user
 
     if booking.status == "Cancelled" or booking.status == "CANCELLED":
-        messages.error("Cannot pre-book food orders for cancelled booking")
+        messages.error(request,"Cannot pre-book food orders for cancelled booking")
         return redirect('regular-dashboard')
     if request.method == 'POST':
         form = FoodOrderForm(request.POST, theater=theater)
         if form.is_valid():
-            food_item = form.cleaned_data['food_item']
+            food = form.cleaned_data['food_item']
             quantity = form.cleaned_data['quantity']
-            total_price = food_item.price * quantity
+            total_price = food.price * quantity
             if user_profile.wallet_balance >= total_price:
+                otp = generate_otp()
+                transaction = Transaction.objects.create(
+                    sender_wallet=user_profile,
+                    receiver_wallet=theater.admin.profile,
+                    transaction_type='food',
+                    amount=total_price,
+                    status='PENDING', # when transaction is not yet complete
+                    otp = otp
+                )
+                data = {
+                    "transaction_id": transaction.id,
+                    "source": "book_food",
+                    "booking_id": booking_id,
+                    "food_id": food.id,
+                    "quantity": quantity
+                }
+                token = signing.dumps(data)
+                return redirect('verify-otp', token=token)
+
                 user_profile.wallet_balance -= total_price
                 theater.admin.profile.wallet_balance += total_price
 
@@ -153,7 +181,6 @@ def book_food(request, booking_id):
                     transaction_type='food',
                     amount=total_price,
                     status='COMPLETE',
-                    timestamp=timezone.now(),
                     order = order
                 )
 

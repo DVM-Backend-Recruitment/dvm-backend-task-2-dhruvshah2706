@@ -29,17 +29,21 @@
                             <td>{{ transaction.booking.show.movie }}</td>
                         {% elif transaction.order %}
                             <td>{{ transaction.order.booking.show.movie }}</td>
-                            {% endif %}
+                        {% endif %}
                         <td>{{ transaction.amount }}</td>
-                        <td>{{ transaction.status }}</td>
-                        <td>{{ transaction.transaction_type }}</td>
+                        <td>{{ transaction.get_status_display }}</td>
+                        <td>{{ transaction.get_transaction_type_display }}</td>
                         <td>{{ transaction.receiver_wallet.user.username }}</td>
-                        {% if transaction.booking and transaction.status == "COMPLETE" %}
-                            <td class="nav-item"><a class = "nav-link" href="{% url 'cancel-booking' transaction.booking.id %}">Click</a></td>
-                        {% elif transaction.order %}
-                            <td>Not allowed</td>
+                        {% if transaction.booking %}
+                            {% if transaction.status == "COMPLETE" or transaction.status == "Complete" %}
+                                <td class="nav-item">
+                                    <a class="nav-link" href="{% url 'cancel-booking' transaction.booking.id %}">Click</a>
+                                </td>
+                            {% else %}
+                                <td>Already cancelled</td>
+                            {% endif %}
                         {% else %}
-                            <td>Already cancelled</td>
+                            <td>Not allowed</td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -66,7 +70,7 @@
                         <td>{{ transaction.timestamp | date:"j M, o; g:iA" }}</td>
                         <td>{{ transaction.amount }}</td>
                         <td>{{ transaction.status }}</td>
-                        <td>{{ transaction.transaction_type }}</td>
+                        <td>{{ transaction.get_transaction_type_display }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -82,7 +82,7 @@ def regular_dashboard(request):
        return redirect('theater-dashboard',pk=theater.id)
     shows = Show.objects.all()
     query = request.GET.get('query', '')  # Get the search query, default to an empty string
-    shows = Show.objects.filter(start_time__gte=timezone.now())
+    shows = Show.objects.filter(start_time__gte=timezone.now()).order_by('start_time')
     is_empty = False
     if query:
         shows = shows.filter(

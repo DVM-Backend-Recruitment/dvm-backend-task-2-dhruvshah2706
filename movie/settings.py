@@ -13,6 +13,17 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from pathlib import Path
+from django.core.mail.backends.smtp import EmailBackend
+# import certifi
+# import ssl
+# ssl._create_default_https_context = ssl._create_unverified_context
+
+# # Provide the password for your key
+# password = b'ebkinhmupxppxdnl'
+
+# # Load the certificate and private key with password
+# ssl_context = ssl.create_default_context()
+# ssl_context.load_cert_chain(certfile='path/to/certificate.pem', keyfile='path/to/private_key.pem', password=password)
 
 load_dotenv()
 
@@ -152,6 +163,16 @@ ACCOUNT_EMAIL_VERIFICATION = "optional"  #Adjust based on your requirements
 LOGIN_REDIRECT_URL = '/'  #Redirect after login
 LOGOUT_REDIRECT_URL = '/'
 
+
+#for sending mails
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'dhruvshah2706@gmail.com'
+EMAIL_HOST_PASSWORD = 'khxeesnplzplfwao'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_SSL_CERTFILE = certifi.where()   
 
 #Internationalization
 #https://docs.djangoproject.com/en/5.1/topics/i18n/

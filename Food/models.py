@@ -9,7 +9,7 @@ class FoodItem(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.price}'
 
 class Order(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)

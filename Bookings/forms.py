@@ -16,6 +16,6 @@ class FoodOrderForm(forms.Form):
         theater = kwargs.pop('theater', None)
         super().__init__(*args, **kwargs)
         if theater:
-            self.fields['food_item'].queryset = FoodItem.objects.filter(theater=theater)
+            self.fields['food_item'].queryset = FoodItem.objects.filter(theater=theater.id)
 
 

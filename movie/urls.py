@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from users import views as users_views
+from Transactions import views as transactions_views
 from django.views.generic import RedirectView
 
 urlpatterns = [
@@ -35,4 +36,5 @@ urlpatterns = [
     path('booking/',include('Bookings.urls')),
     path('transactions/',include('Transactions.urls')),
     path('profile/',users_views.profile,name='profile'),
+    path('verify_otp/<str:token>/',transactions_views.verify_otp,name='verify-otp')
 ]

@@ -11,6 +11,7 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=10, choices=[('INCOMPLETE', 'Incomplete'), ('COMPLETE', 'Complete'), ('REVERTED', 'Reverted')])
     timestamp = models.DateTimeField(default=timezone.now)
+    otp = models.CharField(max_length=6, null=True, blank=True)
     booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions',default=None)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions',default=None)
 
