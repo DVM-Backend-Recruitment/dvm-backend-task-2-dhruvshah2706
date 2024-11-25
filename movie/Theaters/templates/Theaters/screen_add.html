@@ -1,0 +1,10 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+    <h2>Add Screen for {{ theater.name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ screen_form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Screen</button>
+    </form>
+{% endblock %}

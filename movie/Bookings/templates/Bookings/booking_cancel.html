@@ -1,0 +1,28 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h2>Cancel Booking</h2>
+
+    <p><strong>Movie:</strong> {{ booking.show.movie.title }}</p>
+    <p><strong>Theater:</strong> {{ booking.show.theater.name }}</p>
+    <p><strong>Screen:</strong> {{ booking.show.screen.name }}</p>
+    <p><strong>Show Time:</strong> {{ booking.show.start_time }}</p>
+    <p><strong>Booking Status:</strong> {{ booking.status }}</p>
+    <p><strong>Booking Date:</strong> {{ booking.booking_date }}</p>
+
+    {% if booking.status != 'Cancelled' %}
+      <p>Are you sure you want to cancel this booking?</p>
+      
+      <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes,  Cancel Booking</button>
+      </form>
+      
+      <a href="{% url 'view-transactions' %}" class="btn btn-secondary">No,  Go Back</a>
+    {% else %}
+      <p class="text-success">This booking has already been cancelled.</p>
+      <a href="{% url 'view-transactions' %}" class="btn btn-secondary">Go Back</a>
+    {% endif %}
+  </div>
+{% endblock %}

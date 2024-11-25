@@ -1,0 +1,85 @@
+{% extends 'users/base.html' %}
+
+{% block title %}My Transactions{% endblock %}
+
+{% block content %}
+<h2>My Transactions</h2>
+
+<div class="container">
+
+    <h3>Withdrawals</h3>
+    {% if transactions_withdraw %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Movie</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Receiver</th>
+                    <th>Cancel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions_withdraw %}
+                    <tr>
+                        <td>{{ transaction.timestamp | date:"j M,  o; g:iA" }}</td>
+                        {% if transaction.booking%}
+                            <td>{{ transaction.booking.show.movie }}</td>
+                        {% elif transaction.order %}
+                            <td>{{ transaction.order.booking.show.movie }}</td>
+                        {% else %}
+                            <td>Not available</td>
+                        {% endif %}
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.get_status_display }}</td>
+                        <td>{{ transaction.get_transaction_type_display }}</td>
+                        <td>{{ transaction.receiver_wallet.user.username }}</td>
+                        {% if transaction.booking %}
+                            {% if transaction.status == "COMPLETE" or transaction.status == "Complete" %}
+                                <td class="nav-item">
+                                    <a class="nav-link" href="{% url 'cancel-booking' transaction.booking.id %}">Click</a>
+                                </td>
+                            {% else %}
+                                <td>Already cancelled</td>
+                            {% endif %}
+                        {% else %}
+                            <td>Not allowed</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No withdrawal transactions found.</p>
+    {% endif %}
+
+    <h3>Additions</h3>
+    {% if transactions_add %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions_add %}
+                    <tr>
+                        <td>{{ transaction.timestamp | date:"j M,  o; g:iA" }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.status }}</td>
+                        <td>{{ transaction.get_transaction_type_display }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No addition transactions found.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

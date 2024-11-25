@@ -1,0 +1,93 @@
+{% extends "users/base.html" %}
+{% block content %}
+    <h1>Welcome to the Dashboard</h1>
+
+    <form method="GET" action="{% url 'regular-dashboard' %}">
+        <input type="text" name="query" placeholder="Search by movie title..." class="form-control" value="{{ request.GET.query }}">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </form>
+<br>
+    <a class = "mt-10" href="{% url 'view-transactions' %}">See transactions</a>
+    
+    <div class="container">
+        <h3><br>Scheduled Shows</h3>
+        {% if shows %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Theater</th>
+                        <th>Screen</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Ticket Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for show in shows %}
+                        <tr>
+                            <td>{{ show.movie.title }}</td>
+                            <td>{{ show.theater }}</td>
+                            <td>{{ show.screen.name }}</td>
+                            <td>{{ show.start_time }}</td>
+                            <td>{{ show.end_time }}</td>
+                            <td>Rs {{ show.ticket_price }}</td>
+                            <td>
+                                <a href="{% url 'book-ticket' show.id %}" class="btn btn-primary">Book ticket</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif is_empty %} 
+            <p>No shows found</p>
+        {% else %}
+            <p>No scheduled shows</p>
+        {% endif %}
+
+        <h3>Purchased Tickets</h3>
+        {% if user_bookings %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Theater</th>
+                        <th>Screen</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th>Order Food</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in user_bookings %}
+                        <tr>
+                            <td>{{ booking.show.movie.title }}</td>
+                            <td>{{ booking.show.theater.name }}</td>
+                            <td>{{ booking.show.screen.name }}</td>
+                            <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.get_status_display }}</td>
+                            <td>
+                                <a href="{% url 'food-book' booking.id %}" class="btn btn-secondary">Order Food</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <h5>Food Ordered:</h5>
+                                {% for order in booking.order_set.all %}
+                                    <ul>
+                                        <li>{{ order.food_item.name }} ({{ order.quantity }}) - Rs {{ order.total_price }}</li>
+                                    </ul>
+                                {% empty %}
+                                    <p>No food ordered for this booking.</p>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No tickets purchased.</p>
+        {% endif %}
+    </div>
+{% endblock %}

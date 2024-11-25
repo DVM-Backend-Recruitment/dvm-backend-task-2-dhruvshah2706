@@ -1,0 +1,33 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Book Ticket{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Book Tickets for {{ show.movie.title }}</h2>
+    <p><strong>Theater:</strong> {{ show.theater.name }}</p>
+    <p><strong>Screen:</strong> {{ show.screen.name }}</p>
+    <p><strong>Start Time:</strong> {{ show.start_time }}</p>
+    <p><strong>End Time:</strong> {{ show.end_time }}</p>
+    <p><strong>Ticket Price:</strong> Rs {{ show.ticket_price }}</p>
+    <p><strong>Available Seats:</strong> <span id="available-seats">{{ available_seats }}</span></p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Book Tickets</button>
+    </form>
+</div>
+<script>
+    document.getElementById('num_tickets').addEventListener('input',  function() {
+        const availableSeats = parseInt(document.getElementById('available-seats').textContent);
+        const numTickets = parseInt(this.value);
+        
+        if (numTickets > availableSeats) {
+            alert("Requested tickets exceed available seats.");
+            this.value = availableSeats;  // Limit input to max available seats
+        }
+    });
+</script>
+
+{% endblock %}

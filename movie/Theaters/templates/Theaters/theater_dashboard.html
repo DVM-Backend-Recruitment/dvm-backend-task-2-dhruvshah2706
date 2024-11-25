@@ -1,0 +1,66 @@
+{% extends 'users/base.html' %}
+
+{% block title %}{{ theater.name }} - Theater Detail{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>{{ theater.name }}</h2>
+        <p><strong>Location:</strong> {{ theater.location }}</p>
+
+        <h3>Screens</h3>
+        {% if screens %}
+            <ul>
+                {% for screen in screens %}
+                    <li>
+                        <strong>{{ screen.name }}</strong> - Total Seats: {{ screen.total_seats }}
+                        <a href="{% url 'screen-edit' screen_id=screen.id %}">Edit</a>
+                        <a href="{% url 'screen-delete' screen_id=screen.id %}">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No screens available for this theater.</p>
+        {% endif %}
+        <a href="{% url 'screen-add' %}">Add a Screen</a>
+    </div>
+
+    <div class="container">
+        <h3><br>Scheduled Shows</h3>
+        {% if shows %}
+            <ul>
+                {% for show in shows %}
+                    <li>
+                        <strong>Movie:</strong> {{ show.movie.title }}<br>
+                        <strong>Screen:</strong> {{ show.screen.name }}<br>
+                        <strong>Start Time:</strong> {{ show.start_time }}<br>
+                        <strong>End Time:</strong> {{ show.end_time }}<br>
+                        <strong>Ticket Price:</strong> Rs {{ show.ticket_price }}
+                        <a href="{% url 'show-edit' show_id=show.id %}">Edit</a>
+                        <a href="{% url 'show-delete' show_id=show.id %}">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No shows scheduled.</p>
+        {% endif %}
+        <a href="{% url 'show-schedule' %}">Schedule a Show</a>
+    </div>
+
+    <div class="container">
+        <h3><br>Food Items</h3>
+        {% if food_items %}
+            <ul>
+                {% for food in food_items %}
+                    <li>
+                        <strong>{{ food.name }}</strong> - Price: Rs {{ food.price }}
+                        <a href="{% url 'food-edit' food.id %}">Edit</a>
+                        <a href="{% url 'food-delete' food.id %}">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No food items available for this theater.</p>
+        {% endif %}
+        <a href="{% url 'food-add' %}">Add Food Item</a>
+    </div>
+{% endblock %}

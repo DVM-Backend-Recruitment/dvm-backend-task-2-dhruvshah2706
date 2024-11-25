@@ -1,0 +1,14 @@
+{% extends 'users/base.html' %}
+
+{% block title %}Delete Screen{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2>Are you sure you want to delete the screen "{{ screen.name }}"?</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes,  Delete</button>
+            <a href="{% url 'theater-dashboard' pk=screen.theater.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}
