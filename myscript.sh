@@ -1,0 +1,1 @@
+mv movie/.env.dev /

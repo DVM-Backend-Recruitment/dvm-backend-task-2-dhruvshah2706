@@ -1,0 +1,31 @@
+services:
+  web:
+    context: ./movie  # Set the build context to the 'movie' directory
+    dockerfile: Dockerfile
+    container_name: django-app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+       - ./movie:/usr/src/app/
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - db
+    environment:
+      - DEBUG=True
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: dhruvshah2706
+      POSTGRES_PASSWORD: Abcd@1234
+      POSTGRES_DB: movie_ticket_db
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
